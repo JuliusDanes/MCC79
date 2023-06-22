@@ -20,8 +20,8 @@ public class Account : BaseEntity
     [Column("expired_time")]
     public DateTime ExpiredTime { get; set; }
 
-    //Kardinalitas
-    public Employee Employee { get; set; }
+    //Cardinality
+    public Employee? Employee { get; set; }
 
-    public ICollection<AccountRole> AccountRoles { get; set; }
+    public ICollection<AccountRole>? AccountRoles { get; set; }
 }

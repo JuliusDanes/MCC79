@@ -32,7 +32,8 @@ namespace API.Data
                     employee.PhoneNumber
                 }).IsUnique();
 
-            //Relationship
+            //Relationship 
+            //Relation between University and Education (Many to 1)
             modelBuilder.Entity<University>()
                 .HasMany(university => university.Educations)
                 .WithOne(education => education.University)

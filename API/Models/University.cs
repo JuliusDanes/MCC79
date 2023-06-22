@@ -11,6 +11,6 @@ public class University : BaseEntity
     [Column("name", TypeName = "nvarchar(100)")]
     public string Name { get; set; }
 
-    //Kardinalitas
-    public ICollection<Education> Educations { get; set; }
+    //Cardinality
+    public ICollection<Education>? Educations { get; set; }
 }

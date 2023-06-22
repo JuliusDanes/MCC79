@@ -13,7 +13,7 @@ public class Room : BaseEntity
     
     [Column("capacity")]
     public int Capacity { get; set; }
-    
-    //Kardinalitas
-    public ICollection<Booking> Bookings { get; set; }
+
+    //Cardinality
+    public ICollection<Booking>? Bookings { get; set; }
 }
