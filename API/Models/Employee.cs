@@ -1,27 +1,25 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using API.Utilities.Enum;
 
 namespace API.Models;
 
 [Table("tb_m_employees")]
-public class Employee
+public class Employee : BaseEntity
 {
-    [Key] [Column("guid")] public Guid Guid { get; set; }
-
-    [Column("nik", TypeName = "nvarchar(6)")]
+    [Column("nik", TypeName = "nchar(6)")]
     public string Nik { get; set; }
 
     [Column("first_name", TypeName = "nvarchar(100)")]
     public string FirstName { get; set; }
 
     [Column("last_name", TypeName = "nvarchar(100)")]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
     
     [Column("birth_date")]
     public DateTime BirthDate { get; set; }
     
     [Column("gender")]
-    public int Gender { get; set; }
+    public GenderEnum Gender { get; set; }
     
     [Column("hiring_date")]
     public DateTime HiringDate { get; set; }
@@ -31,10 +29,11 @@ public class Employee
     
     [Column("phone_number", TypeName = "nvarchar(20)")]
     public string PhoneNumber { get; set; }
-    
-    [Column("created_date")]
-    public DateTime CreatedDate { get; set; }
-    
-    [Column("modified_date")]
-    public DateTime ModifiedDate { get; set; }
+
+    //Kardinalitas
+    public Account Account { get; set; }
+
+    public Education Education { get; set; }
+
+    public ICollection<Booking> Bookings { get; set;}
 }
