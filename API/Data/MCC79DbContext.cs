@@ -23,7 +23,7 @@ namespace API.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            //Constraints
+            //Constraints Unique
             modelBuilder.Entity<Employee>()
                 .HasIndex(employee => new
                 {
@@ -39,31 +39,37 @@ namespace API.Data
                 .WithOne(education => education.University)
                 .HasForeignKey(education => education.UniversityGuid);
 
+            //Relation between Education and Employee (1 to 1)
             modelBuilder.Entity<Education>()
-            .HasOne(education => education.Employee)
-            .WithOne(employee => employee.Education)
-            .HasForeignKey<Education>(education => education.Guid);
+                .HasOne(education => education.Employee)
+                .WithOne(employee => employee.Education)
+                .HasForeignKey<Education>(education => education.Guid);
 
+            //Relation between Employee and Booking (Many to 1)
             modelBuilder.Entity<Employee>()
                 .HasMany(employee => employee.Bookings)
                 .WithOne(booking => booking.Employee)
                 .HasForeignKey(booking => booking.EmployeeGuid);
 
+            //Relation between Booking and Room (1 to Many)
             modelBuilder.Entity<Booking>()
                 .HasOne(booking => booking.Room)
                 .WithMany(room => room.Bookings)
                 .HasForeignKey(room => room.RoomGuid);
 
+            //Relation between Employee and Account (1 to 1)
             modelBuilder.Entity<Employee>()
                 .HasOne(employee => employee.Account)
                 .WithOne(account => account.Employee)
                 .HasForeignKey<Account>(account => account.Guid);
 
+            //Relation between Account and AccountRole (Many to 1)
             modelBuilder.Entity<Account>()
                 .HasMany(account => account.AccountRoles)
                 .WithOne(accountRole => accountRole.Account)
                 .HasForeignKey(accountRole => accountRole.AccountGuid);
 
+            //Relation between AccountRole and Role (1 to Many)
             modelBuilder.Entity<AccountRole>()
                 .HasOne(account_role => account_role.Role)
                 .WithMany(role => role.AccountRoles)
