@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [ApiController]
     public abstract class BaseController<TEntity> : ControllerBase where TEntity : class
     {
         protected readonly IBaseRepository<TEntity> _repository;

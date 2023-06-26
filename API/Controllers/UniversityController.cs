@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("api/{controllers}")]
+    [Route("api/universities")]
     public class UniversityController : BaseController<University>
     {
         public UniversityController(IUniversityRepository repository) : base(repository)
