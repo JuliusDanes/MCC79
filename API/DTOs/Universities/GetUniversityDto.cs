@@ -1,6 +1,6 @@
-﻿namespace API.DTO.Universities
+﻿namespace API.DTOs.Universities
 {
-    public class GetUniversitiesDto
+    public class GetUniversityDto
     {
         public Guid Guid { get; set; }
         public string Name { get; set; }
