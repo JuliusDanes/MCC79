@@ -4,7 +4,7 @@ using API.Models;
 
 namespace API.Repositories;
 
-public class AccountRoleRepository : BaseRepository<AccountRole>, IAccountRoleRepository
+public class AccountRoleRepository : GeneralRepository<AccountRole>, IAccountRoleRepository
 {
     public AccountRoleRepository(MCC79DbContext context) : base(context)
     {

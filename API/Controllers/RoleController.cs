@@ -6,7 +6,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/roles")]
-public class RolesController : BaseController<Role>
+public class RolesController : GeneralController<Role>
 {
     public RolesController(IRoleRepository repository) : base(repository)
     {

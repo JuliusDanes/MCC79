@@ -2,6 +2,6 @@
 
 namespace API.Contracts;
 
-public interface IEmployeeRepository : IBaseRepository<Employee>
+public interface IEmployeeRepository : IGeneralRepository<Employee>
 {
 }

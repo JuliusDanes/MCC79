@@ -6,7 +6,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/educations")]
-public class EducationController : BaseController<Education>
+public class EducationController : GeneralController<Education>
 {
     public EducationController(IEducationRepository repository) : base(repository)
     {

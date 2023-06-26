@@ -2,6 +2,6 @@
 
 namespace API.Contracts;
 
-public interface IRoomRepository : IBaseRepository<Room>
+public interface IRoomRepository : IGeneralRepository<Room>
 {
 }

@@ -4,7 +4,7 @@ using API.Models;
 
 namespace API.Repositories;
 
-public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
+public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
 {
     public EmployeeRepository(MCC79DbContext context) : base(context)
     {

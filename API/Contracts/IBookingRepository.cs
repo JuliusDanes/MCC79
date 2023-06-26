@@ -2,6 +2,6 @@
 
 namespace API.Contracts;
 
-public interface IBookingRepository : IBaseRepository<Booking>
+public interface IBookingRepository : IGeneralRepository<Booking>
 {
 }

@@ -2,6 +2,6 @@
 
 namespace API.Contracts;
 
-public interface IAccountRepository : IBaseRepository<Account>
+public interface IAccountRepository : IGeneralRepository<Account>
 {
 }

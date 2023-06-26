@@ -2,6 +2,6 @@
 
 namespace API.Contracts;
 
-public interface IEducationRepository : IBaseRepository<Education>
+public interface IEducationRepository : IGeneralRepository<Education>
 {
 }

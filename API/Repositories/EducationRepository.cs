@@ -4,7 +4,7 @@ using API.Models;
 
 namespace API.Repositories;
 
-public class EducationRepository : BaseRepository<Education>, IEducationRepository
+public class EducationRepository : GeneralRepository<Education>, IEducationRepository
 {
     public EducationRepository(MCC79DbContext context) : base(context)
     {

@@ -3,11 +3,11 @@ using API.Data;
 
 namespace API.Repositories
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+    public class GeneralRepository<TEntity> : IGeneralRepository<TEntity> where TEntity : class
     {
-        private readonly MCC79DbContext _context;
+        protected readonly MCC79DbContext _context;
 
-        public BaseRepository(MCC79DbContext context)
+        public GeneralRepository(MCC79DbContext context)
         {
             _context = context;
         }
@@ -19,7 +19,9 @@ namespace API.Repositories
 
         public TEntity? GetByGuid(Guid guid)
         {
-            return _context.Set<TEntity>().Find(guid);
+            var entity = _context.Set<TEntity>().Find(guid);
+            _context.ChangeTracker.Clear();
+            return entity;
         }
 
         public TEntity Create(TEntity entity)
@@ -64,6 +66,11 @@ namespace API.Repositories
             {
                 return false;
             }
+        }
+
+        public bool IsExist(Guid guid)
+        {
+            return GetByGuid(guid) is not null;
         }
     }
 }
