@@ -226,7 +226,7 @@ namespace API.Migrations
                     b.Property<string>("Nik")
                         .IsRequired()
                         .HasColumnType("nchar(6)")
-                        .HasColumnName("nik");
+                        .HasColumnName("Nik");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()

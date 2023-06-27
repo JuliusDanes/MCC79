@@ -1,12 +1,10 @@
-﻿using API.Contracts;
-using API.Data;
+﻿using API.Data;
 using API.Models;
+using API.Contracts;
 
 namespace API.Repositories;
 
-public class RoleRepository : GeneralRepository<Role>, IRoleRepository
+public class RoleRepository: GeneralRepository<Role>, IRoleRepository
 {
-    public RoleRepository(MCC79DbContext context) : base(context)
-    {
-    }
+    public RoleRepository(MCC79DbContext  dbContext) : base(dbContext) { }
 }

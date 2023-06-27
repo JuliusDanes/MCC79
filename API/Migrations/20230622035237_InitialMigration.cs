@@ -14,7 +14,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    nik = table.Column<string>(type: "nchar(6)", nullable: false),
+                    Nik = table.Column<string>(type: "nchar(6)", nullable: false),
                     first_name = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     last_name = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     birth_date = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -202,9 +202,9 @@ namespace API.Migrations
                 column: "university_guid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_m_employees_nik_email_phone_number",
+                name: "IX_tb_m_employees_Nik_email_phone_number",
                 table: "tb_m_employees",
-                columns: new[] { "nik", "email", "phone_number" },
+                columns: new[] { "Nik", "email", "phone_number" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

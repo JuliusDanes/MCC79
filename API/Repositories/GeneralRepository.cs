@@ -1,76 +1,77 @@
 ﻿using API.Contracts;
 using API.Data;
+using API.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace API.Repositories
+namespace API.Repositories;
+
+public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
+    where TEntity : class
 {
-    public class GeneralRepository<TEntity> : IGeneralRepository<TEntity> where TEntity : class
+    protected readonly MCC79DbContext  _context;
+
+    public GeneralRepository(MCC79DbContext  context)
     {
-        protected readonly MCC79DbContext _context;
+        _context = context;
+    }
 
-        public GeneralRepository(MCC79DbContext context)
-        {
-            _context = context;
-        }
+    public ICollection<TEntity> GetAll()
+    {
+        return _context.Set<TEntity>().ToList();
+    }
 
-        public ICollection<TEntity> GetAll()
-        {
-            return _context.Set<TEntity>().ToList();
-        }
+    public TEntity? GetByGuid(Guid guid)
+    {
+        var entity = _context.Set<TEntity>().Find(guid);
+        _context.ChangeTracker.Clear();
+        return entity;
 
-        public TEntity? GetByGuid(Guid guid)
+    }
+
+    public TEntity? Create(TEntity entity)
+    {
+        try
         {
-            var entity = _context.Set<TEntity>().Find(guid);
-            _context.ChangeTracker.Clear();
+            _context.Set<TEntity>().Add(entity);
+            _context.SaveChanges();
             return entity;
         }
-
-        public TEntity Create(TEntity entity)
+        catch
         {
-            try
-            {
-                _context.Set<TEntity>().Add(entity);
-                _context.SaveChanges();
-                return entity;
-            }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
-        public bool Update(TEntity entity)
+    public bool Update(TEntity entity)
+    {
+        try
         {
-            try
-            {
-                _context.Set<TEntity>().Update(entity);
-                _context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            _context.Set<TEntity>().Update(entity);
+            _context.SaveChanges();
+            return true;
         }
+        catch
+        {
+            return false;
+        }
+    }
 
-        public bool Delete(Guid guid)
+    public bool Delete(TEntity entity)
+    {
+        try
         {
-            try
-            {
-                var entity = GetByGuid(guid);
-                if (entity is null) return false;
-                _context.Set<TEntity>().Remove(entity);
-                _context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            _context.Set<TEntity>().Remove(entity);
+            _context.SaveChanges();
+            return true;
         }
+        catch
+        {
+            return false;
+        }
+    }
 
-        public bool IsExist(Guid guid)
-        {
-            return GetByGuid(guid) is not null;
-        }
+    public bool IsExist(Guid guid)
+    {
+        return GetByGuid(guid) != null;
     }
 }

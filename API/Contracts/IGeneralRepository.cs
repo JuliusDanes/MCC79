@@ -1,14 +1,13 @@
 ﻿using API.Models;
 
-namespace API.Contracts
+namespace API.Contracts;
+
+public interface IGeneralRepository<TEntity>
 {
-    public interface IGeneralRepository<TEntity>
-    {
-        ICollection<TEntity> GetAll();
-        TEntity? GetByGuid(Guid guid);
-        TEntity Create(TEntity entity);
-        bool Update(TEntity entity);
-        bool Delete(Guid guid);
-        bool IsExist(Guid guid);
-    }
+    ICollection<TEntity> GetAll();
+    TEntity? GetByGuid(Guid guid);
+    TEntity? Create(TEntity entity);
+    bool Update(TEntity entity);
+    bool Delete(TEntity entity);
+    bool IsExist(Guid guid);
 }
