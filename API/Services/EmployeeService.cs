@@ -68,14 +68,15 @@ public class EmployeeService
         var entity = new Employee
         {
             Guid = new Guid(),
+            //Nik = newEntity.Nik
+            Nik = GenerateNik(),
             PhoneNumber = newEntity.PhoneNumber,
             FirstName = newEntity.FirstName,
-            LastName = newEntity.LastName,
+            LastName = newEntity.LastName ?? "",
             Gender = newEntity.Gender,
             HiringDate = newEntity.HiringDate,
             Email = newEntity.Email,
             BirthDate = newEntity.BirthDate,
-            Nik = newEntity.Nik,
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
         };
@@ -117,7 +118,7 @@ public class EmployeeService
             Guid = updateEntity.Guid,
             PhoneNumber = updateEntity.PhoneNumber,
             FirstName = updateEntity.FirstName,
-            LastName = updateEntity.LastName,
+            LastName = updateEntity.LastName ?? "",
             Gender = updateEntity.Gender,
             HiringDate = updateEntity.HiringDate,
             Email = updateEntity.Email,
@@ -153,5 +154,18 @@ public class EmployeeService
         }
 
         return 1;
+    }
+
+    public string GenerateNik()
+    {
+        var entities = _servicesRepository.GetAll();
+        if (!entities.Any())
+        {
+            return "1111";
+        }
+
+        var lastEntity = _servicesRepository.GetLast();
+        string nik = (int.Parse(lastEntity.Nik) + 1).ToString();
+        return nik;
     }
 }
