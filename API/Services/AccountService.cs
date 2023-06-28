@@ -5,6 +5,8 @@ using API.DTOs.Universities;
 using API.Models;
 using API.Repositories;
 using API.Utilities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Security.Principal;
 
 namespace API.Services;
@@ -109,6 +111,57 @@ public class AccountService
             Gpa = createdEducation.Gpa,
             UniversityCode = createdUniversity.Code,
             UniversityName = createdUniversity.Name
+        };
+
+        return toDto;
+    }
+    public int GenerateOtp()
+    {
+        Random random = new Random();
+        int otp = random.Next(100000, 999999);
+        return otp;
+    }
+
+    public ForgetPasswordDto? ForgotPassword(string email)
+    {
+        // Get Employee Account By Email
+        var entityEmployee = _employeeRepository.GetAll().Where(employee => employee.Email == email).FirstOrDefault();
+
+        if (entityEmployee is null)
+        {
+            return null;
+        }
+
+        // Get Related Account By Guid
+        var entityAccount = _servicesRepository.GetAll().Where(account => account.Guid == entityEmployee.Guid).FirstOrDefault();
+
+        if (entityAccount is null)
+        {
+            return null;
+        }
+
+        // Generate OTP and Expired Time For 5 Minutes
+        int otp = GenerateOtp();
+        DateTime expiredTime = DateTime.Now.AddMinutes(5);
+
+        // Update Otp, Expired Time, isUsed in Account
+        var toAccountDto = new UpdateAccountDto
+        {
+            Guid = entityAccount.Guid,
+            Password = entityAccount.Password,
+            IsDeleted = entityAccount.IsDeleted,
+            Otp = otp,
+            IsUsed = false,
+            ExpiredTime = expiredTime
+        };
+        UpdateAccount(toAccountDto);
+
+        // Create OTP and Update the Account Model
+        var toDto = new ForgetPasswordDto
+        {
+            Email = entityEmployee.Email,
+            Otp = otp,
+            ExpiredTime = expiredTime
         };
 
         return toDto;

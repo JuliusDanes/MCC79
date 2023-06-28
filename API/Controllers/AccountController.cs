@@ -6,6 +6,7 @@ using API.DTOs.Universities;
 using API.Utilities;
 using System.Net;
 using API.DTOs.Accounts;
+using System;
 
 namespace API.Controllers;
 
@@ -41,6 +42,31 @@ public class AccountController : ControllerBase
             Status = HttpStatusCode.OK.ToString(),
             Message = "Successfully created",
             Data = createdRegister
+        });
+    }
+
+
+    [Route("forgot-password")]
+    [HttpPost]
+    public IActionResult ForgotPassword(string email)
+    {
+        var createdForgotPassword = _service.ForgotPassword(email);
+        if (createdForgotPassword is null)
+        {
+            return BadRequest(new ResponseHandler<ForgetPasswordDto>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Otp not created"
+            });
+        }
+
+        return Ok(new ResponseHandler<ForgetPasswordDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully otp created",
+            Data = createdForgotPassword
         });
     }
 
