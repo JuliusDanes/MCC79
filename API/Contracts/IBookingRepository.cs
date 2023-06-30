@@ -4,4 +4,5 @@ namespace API.Contracts;
 
 public interface IBookingRepository : IGeneralRepository<Booking>
 {
+    ICollection<Booking> GetBookingLength();
 }

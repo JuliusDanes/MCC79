@@ -8,4 +8,8 @@ public class BookingRepository : GeneralRepository<Booking>, IBookingRepository
 {
     public BookingRepository(MCC79DbContext  dbContext) : base(dbContext) { }
 
+    public ICollection<Booking> GetBookingLength()
+    {
+        return _context.Set<Booking>().ToList();
+    }
 }

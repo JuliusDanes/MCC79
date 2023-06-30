@@ -148,4 +148,29 @@ public class BookingController : ControllerBase
         });
     }
 
+    [Route("bookingsLength")]
+    [HttpGet]
+    public IActionResult CalculateBookingLength()
+    {
+        var entities = _service.GetBookingLength();
+
+        if (entities == null)
+        {
+            return NotFound(new ResponseHandler<BookingLengthDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<BookingLengthDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = entities
+        });
+    }
+
 }
