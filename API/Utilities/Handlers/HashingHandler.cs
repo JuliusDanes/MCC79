@@ -1,9 +1,9 @@
 ﻿using BCrypt.Net;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
-namespace API.Utilities
+namespace API.Utilities.Handlers
 {
-    public class Hashing
+    public class HashingHandler
     {
         private static string GenerateSalt()
         {
@@ -15,7 +15,7 @@ namespace API.Utilities
             return BCrypt.Net.BCrypt.HashPassword(password, GenerateSalt());
         }
 
-        public static bool ValidatePassword(string password, string hashPassword)
+        public static bool Validate(string password, string hashPassword)
         {
             return BCrypt.Net.BCrypt.Verify(password, hashPassword);
         }

@@ -13,4 +13,11 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
         _context.ChangeTracker.Clear();
         return entity;
     }
+
+    public Employee? GetByEmail(string email) 
+    {
+        var entity = _context.Set<Employee>().Where(employee => employee.Email == email).FirstOrDefault();
+        _context.ChangeTracker.Clear();
+        return entity;
+    }
 }

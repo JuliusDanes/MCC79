@@ -7,9 +7,9 @@ namespace API.Services
 {
     public class LoginService
     {
-        //var claims = new List<Claim>()
-        //{
-
-        //}
+        var claims = new List<Claim>()
+        {
+              
+        }
     }
 }

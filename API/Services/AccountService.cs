@@ -4,10 +4,12 @@ using API.DTOs.Accounts;
 using API.DTOs.Universities;
 using API.Models;
 using API.Repositories;
-using API.Utilities;
+using API.Utilities.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Security.Claims;
 using System.Security.Principal;
+using System.Security.Claims;
 
 namespace API.Services;
 
@@ -17,16 +19,19 @@ public class AccountService
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUniversityRepository _universityRepository;
     private readonly IEducationRepository _educationRepository;
+    private readonly ITokenHandler _tokenHandler;
 
     public AccountService(IAccountRepository repository,
                          IEmployeeRepository employeeRepository,
                          IUniversityRepository universityRepository,
-                         IEducationRepository educationRepository)
+                         IEducationRepository educationRepository,
+                         ITokenHandler tokenHandler)
     {
         _servicesRepository = repository;
         _employeeRepository = employeeRepository;
         _universityRepository = universityRepository;
         _educationRepository = educationRepository;
+        _tokenHandler = tokenHandler;
     }
     public RegisterDto? Register(RegisterDto registerDto)
     {
@@ -85,7 +90,7 @@ public class AccountService
         Account account = new Account
         {
             Guid = employee.Guid,
-            Password = Hashing.HashPassword(registerDto.Password),
+            Password = HashingHandler.HashPassword(registerDto.Password),
             ConfirmPassword = registerDto.ConfirmPassword
         };
 
@@ -114,6 +119,40 @@ public class AccountService
         };
 
         return toDto;
+    }
+
+    public string Login(LoginDto login)
+    {
+        var employee = _employeeRepository.GetByEmail(login.Email);
+        if (employee is null)
+            return "0";
+
+        var account = _servicesRepository.GetByGuid(employee.Guid);
+        if (account is null)
+            return "0";
+
+        if (!HashingHandler.Validate(login.Password, account!.Password))
+            return "-1";
+
+
+        var claims = new List<Claim>()
+        {
+            new Claim("NIK", employee.Nik),
+            new Claim("FullName", $"{employee.FirstName} {employee.LastName}"),
+            new Claim("Email", employee.Email)
+        };
+
+        claims.AddRange(accountRole.Select(role => new Claim("Role", role.RoleGuid.ToString())));
+
+        try
+        {
+            var getToken = _tokenHandler.GenerateToken(claims);
+            return getToken;
+        }
+        catch
+        {
+            return "-2";
+        }
     }
     public int GenerateOtp()
     {
@@ -206,7 +245,7 @@ public class AccountService
         var entityAccount = new Account
         {
             Guid = new Guid(),
-            Password = Hashing.HashPassword(entity.Password),
+            Password = HashingHandler.HashPassword(entity.Password),
             IsDeleted = entity.IsDeleted,
             IsUsed = entity.IsUsed,
             CreatedDate = DateTime.Now,

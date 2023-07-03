@@ -3,7 +3,8 @@ using API.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using API.Services;
 using API.DTOs.Universities;
-using API.Utilities;
+using API.Utilities
+using API.Utilities.Handlers;
 using System.Net;
 using API.DTOs.Accounts;
 using System;
@@ -45,6 +46,48 @@ public class AccountController : ControllerBase
         });
     }
 
+    [HttpPost("login")]
+    public ActionResult Login(LoginDto loginDto)
+    {
+        var loginResult = _service.Login(loginDto);
+        if (loginResult == "0")
+        {
+            return NotFound(new ResponseHandler<LoginDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Account not found"
+            });
+        }
+
+        if (loginResult == "-1")
+        {
+            return BadRequest(new ResponseHandler<LoginDto>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Password is incorrect"
+            });
+        }
+
+        if (loginResult == "-2")
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<LoginDto>
+            {
+                Code = StatusCodes.Status500InternalServerError, 
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Error retrieving when creating token"
+            });
+        }
+
+        return Ok(new ResponseHandler<String>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Login Success",
+            Data = loginResult
+        });
+    }
 
     [Route("forgot-password")]
     [HttpPost]
