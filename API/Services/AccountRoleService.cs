@@ -1,126 +1,126 @@
 ﻿using API.Contracts;
 using API.DTOs.AccountRoles;
-
 using API.Models;
-using System.Security.Principal;
 
-namespace API.Services;
-
-public class AccountRoleService
+namespace API.Services
 {
-    private readonly IAccountRoleRepository _servicesRepository;
-
-    public AccountRoleService(IAccountRoleRepository entityRepository)
+    public class AccountRoleService
     {
-        _servicesRepository = entityRepository;
-    }
+        private readonly IAccountRoleRepository _accountRoleRepository;
 
-    public IEnumerable<GetAccountRoleDto>? GetAccountRole()
-    {
-        var entities = _servicesRepository.GetAll();
-        if(!entities.Any()) 
+        public AccountRoleService(IAccountRoleRepository accountRoleRepository)
         {
-            return null;
+            _accountRoleRepository = accountRoleRepository;
         }
 
-        var Dto = entities.Select(entity => new GetAccountRoleDto
+        public IEnumerable<GetAccountRoleDto>? GetAccountRole()
         {
-            Guid = entity.Guid,
-            AccountGuid = entity.AccountGuid,
-            RoleGuid = entity.RoleGuid,
-        }).ToList();
-        return Dto;
-    }
+            var accountRoles = _accountRoleRepository.GetAll();
+            if (!accountRoles.Any())
+            {
+                return null; // No Account Role found
+            }
 
-    public GetAccountRoleDto? GetAccountRole(Guid guid)
-    {
-        var entity = _servicesRepository.GetByGuid(guid);
-        if (entity is null)
-        {
-            return null;
+            var toDto = accountRoles.Select(accountRole =>
+                                                new GetAccountRoleDto
+                                                {
+                                                    Guid = accountRole.Guid,
+                                                    AccountGuid = accountRole.AccountGuid,
+                                                    RoleGuid = accountRole.RoleGuid,
+                                                }).ToList();
+
+            return toDto; // Account Role found
         }
 
-        var toDto = new GetAccountRoleDto
+        public GetAccountRoleDto? GetAccountRole(Guid guid)
         {
-            Guid = entity.Guid,
-            AccountGuid = entity.AccountGuid,
-            RoleGuid = entity.RoleGuid,
-        };
+            var accountRole = _accountRoleRepository.GetByGuid(guid);
+            if (accountRole is null)
+            {
+                return null; // accountRole not found
+            }
 
-        return toDto;
-    }
+            var toDto = new GetAccountRoleDto
+            {
+                Guid = accountRole.Guid,
+                AccountGuid = accountRole.AccountGuid,
+                RoleGuid = accountRole.RoleGuid,
+            };
 
-    public GetAccountRoleDto? CreateAccountRole(NewAccountRoleDto newEntity)
-    {
-        var entity = new AccountRole
-        {
-            Guid = new Guid(),
-            AccountGuid = newEntity.AccountGuid,
-            RoleGuid = newEntity.RoleGuid,
-            CreatedDate = DateTime.Now,
-            ModifiedDate = DateTime.Now
-        };
-
-        var created = _servicesRepository.Create(entity);
-        if (created is null)
-        {
-            return null;
+            return toDto; // Universities found
         }
 
-        var Dto = new GetAccountRoleDto
+        public GetAccountRoleDto? CreateAccountRole(NewAccountRoleDto newAccountRoleDto)
         {
-            Guid = created.Guid,
-            AccountGuid = created.AccountGuid,
-            RoleGuid = created.RoleGuid,
-        };
+            var accountRole = new AccountRole
+            {
+                Guid = new Guid(),
+                AccountGuid = newAccountRoleDto.AccountGuid,
+                RoleGuid = newAccountRoleDto.RoleGuid,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
 
-        return Dto;
-    }
+            var createdAccountRole = _accountRoleRepository.Create(accountRole);
+            if (createdAccountRole is null)
+            {
+                return null; // Account Role not created
+            }
 
-    public int UpdateAccountRole(UpdateAccountRoleDto updateEntity) 
-    {
-        var isExist = _servicesRepository.IsExist(updateEntity.Guid);
-        if (!isExist)
-        {
-            return -1;
+            var toDto = new GetAccountRoleDto
+            {
+                Guid = createdAccountRole.Guid,
+                AccountGuid = createdAccountRole.AccountGuid,
+                RoleGuid = createdAccountRole.RoleGuid,
+            };
+
+            return toDto; // Account Role created
         }
 
-        var getEntity = _servicesRepository.GetByGuid(updateEntity.Guid);
-
-        var entity = new AccountRole
+        public int UpdateAccountRole(UpdateAccountRoleDto updateAccountRole)
         {
-            Guid = updateEntity.Guid,
-            AccountGuid = updateEntity.AccountGuid,
-            RoleGuid = updateEntity.RoleGuid,
-            ModifiedDate = DateTime.Now,
-            CreatedDate = getEntity!.CreatedDate
-        };
+            var isExist = _accountRoleRepository.IsExist(updateAccountRole.Guid);
+            if (!isExist)
+            {
+                return -1; // Account Role not found
+            }
 
-        var isUpdate = _servicesRepository.Update(entity);
-        if (!isUpdate)
-        {
-            return 0;
+            var getAccountRole = _accountRoleRepository.GetByGuid(updateAccountRole.Guid);
+
+            var accountRole = new AccountRole
+            {
+                Guid = updateAccountRole.Guid,
+                AccountGuid = updateAccountRole.AccountGuid,
+                RoleGuid = updateAccountRole.RoleGuid,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getAccountRole!.CreatedDate
+            };
+
+            var isUpdate = _accountRoleRepository.Update(accountRole);
+            if (!isUpdate)
+            {
+                return 0; // Account Role not updated
+            }
+
+            return 1;
         }
 
-        return 1;
-    }
-
-    public int DeleteAccountRole(Guid guid)
-    {
-        var isExist = (_servicesRepository.IsExist(guid));
-        if (!isExist)
+        public int DeleteAccountRole(Guid guid)
         {
-            return -1;
+            var isExist = _accountRoleRepository.IsExist(guid);
+            if (!isExist)
+            {
+                return -1; // Account Role not found
+            }
+
+            var accountRole = _accountRoleRepository.GetByGuid(guid);
+            var isDelete = _accountRoleRepository.Delete(accountRole!);
+            if (!isDelete)
+            {
+                return 0; // Account Role not deleted
+            }
+
+            return 1;
         }
-
-        var account = _servicesRepository.GetByGuid(guid);
-        var isDelete = _servicesRepository.Delete(account!);
-
-        if (!isDelete)
-        {
-            return 0;
-        }
-
-        return 1;
     }
 }

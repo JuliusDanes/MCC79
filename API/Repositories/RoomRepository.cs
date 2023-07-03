@@ -1,10 +1,12 @@
-﻿using API.Data;
+﻿using API.Contracts;
+using API.Data;
 using API.Models;
-using API.Contracts;
 
-namespace API.Repositories;
-
-public class RoomRepository : GeneralRepository<Room>, IRoomRepository
+namespace API.Repositories
 {
-    public RoomRepository(MCC79DbContext  dbContext) : base(dbContext) { }
+    public class RoomRepository : GeneralRepository<Room>, IRoomRepository
+    {
+        public RoomRepository(MCC79DbContext context) : base(context) { }
+
+    }
 }

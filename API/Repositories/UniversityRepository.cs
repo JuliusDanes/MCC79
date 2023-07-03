@@ -1,16 +1,22 @@
-﻿using API.Data;
+﻿using API.Contracts;
+using API.Data;
 using API.Models;
-using API.Contracts;
-using Microsoft.EntityFrameworkCore;
 
-namespace API.Repositories;
-
-public class UniversityRepository : GeneralRepository<University>, IUniversityRepository
+namespace API.Repositories
 {
-    public UniversityRepository(MCC79DbContext  dbContext) : base(dbContext) { }
-
-    public IEnumerable<University> GetByName(string name)
+    public class UniversityRepository : GeneralRepository<University>, IUniversityRepository
     {
-        return _context.Set<University>().Where(x => x.Name == name);
+        public UniversityRepository(MCC79DbContext context) : base(context) { }
+
+        public IEnumerable<University>? GetByName(string name)
+        {
+            return _context.Set<University>().Where(u => u.Name.Contains(name)).ToList();
+        }
+
+        public University? GetByCodeAndName(string code, string name)
+        {
+            return _context.Set<University>().FirstOrDefault(u => u.Code.ToLower() == code.ToLower() && u.Name.ToLower() == name.ToLower());
+        }
+
     }
 }

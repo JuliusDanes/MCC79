@@ -1,13 +1,10 @@
-﻿using BCrypt.Net;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-
-namespace API.Utilities.Handlers
+﻿namespace API.Utilities
 {
-    public class HashingHandler
+    public class Hashing
     {
         private static string GenerateSalt()
         {
-            return BCrypt.Net.BCrypt.GenerateSalt(12); // 12 is default value rounds
+            return BCrypt.Net.BCrypt.GenerateSalt(12); // 12 is the default
         }
 
         public static string HashPassword(string password)
@@ -15,7 +12,7 @@ namespace API.Utilities.Handlers
             return BCrypt.Net.BCrypt.HashPassword(password, GenerateSalt());
         }
 
-        public static bool Validate(string password, string hashPassword)
+        public static bool ValidatePassword(string password, string hashPassword)
         {
             return BCrypt.Net.BCrypt.Verify(password, hashPassword);
         }

@@ -3,7 +3,8 @@
     public class BookingLengthDto
     {
         public Guid RoomGuid { get; set; }
-        public string RoomName { get; set; }
-        public int BookingLength { get; set; }
+        public String RoomName { get; set; }
+        public TimeSpan BookingLenght { get; set; }
+
     }
 }

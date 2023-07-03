@@ -1,8 +1,10 @@
-﻿using API.Models;
+﻿using API.DTOs.Bookings;
+using API.Models;
 
-namespace API.Contracts;
-
-public interface IBookingRepository : IGeneralRepository<Booking>
+namespace API.Contracts
 {
-    ICollection<Booking> GetBookingLength();
+    public interface IBookingRepository : IGeneralRepository<Booking>
+    {
+        ICollection<BookingRoomToday> GetByDateNow();
+    }
 }

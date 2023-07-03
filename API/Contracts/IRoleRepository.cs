@@ -1,8 +1,9 @@
 ﻿using API.Models;
 
-namespace API.Contracts;
-
-public interface IRoleRepository : IGeneralRepository<Role>
+namespace API.Contracts
 {
-    Role? GetByName(string name);
+    public interface IRoleRepository : IGeneralRepository<Role>
+    {
+        Role? GetByName(string name);
+    }
 }

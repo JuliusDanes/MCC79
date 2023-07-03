@@ -1,10 +1,17 @@
-﻿using API.Data;
+﻿using API.Contracts;
+using API.Data;
 using API.Models;
-using API.Contracts;
 
-namespace API.Repositories;
-
-public class AccountRoleRepository : GeneralRepository<AccountRole>, IAccountRoleRepository
+namespace API.Repositories
 {
-    public AccountRoleRepository(MCC79DbContext  dbContext) : base(dbContext) { }
+    public class AccountRoleRepository : GeneralRepository<AccountRole>, IAccountRoleRepository
+    {
+        public AccountRoleRepository(MCC79DbContext context) : base(context) { }
+
+        public ICollection<AccountRole> GetByGuidEmployee(Guid employeeGuid)
+        {
+            return _context.Set<AccountRole>().Where(a => a.AccountGuid == employeeGuid).ToList();
+        }
+    }
 }
+

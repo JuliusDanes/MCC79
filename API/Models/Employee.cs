@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using API.Utilities.Enum;
+using API.Utilities.Enums;
 
 namespace API.Models;
 

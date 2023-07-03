@@ -2,141 +2,144 @@
 using API.DTOs.Universities;
 using API.Models;
 
-namespace API.Services;
-
-public class UniversityService
+namespace API.Services
 {
-    private readonly IUniversityRepository _servicesRepository;
-
-    public UniversityService(IUniversityRepository services)
+    public class UniversityService
     {
-        _servicesRepository = services;
-    }
+        private readonly IUniversityRepository _universityRepository;
 
-    public IEnumerable<GetUniversityDto>? GetUniversity()
-    {
-        var entities = _servicesRepository.GetAll();
-        if(!entities.Any()) 
+        public UniversityService(IUniversityRepository universityRepository)
         {
-            return null;
+            _universityRepository = universityRepository;
         }
 
-        var Dto = entities.Select(entity => new GetUniversityDto
+        public IEnumerable<GetUniversityDto>? GetUniversity()
         {
-            Guid = entity.Guid,
-            Name = entity.Name,
-            Code = entity.Code,
-        });
+            var universities = _universityRepository.GetAll();
+            if (!universities.Any())
+            {
+                return null; // No universities found
+            }
 
-        return Dto;
-    }
+            var toDto = universities.Select(university =>
+                                                new GetUniversityDto
+                                                {
+                                                    Guid = university.Guid,
+                                                    Code = university.Code,
+                                                    Name = university.Name
+                                                }).ToList();
 
-    public IEnumerable<GetUniversityDto>? GetUniversity(string name)
-    {
-        var entities = _servicesRepository.GetByName(name);
-        if (!entities.Any())
-        {
-            return null;
+            return toDto; // Universities found
         }
 
-        var Dto = entities.Select(entity => new GetUniversityDto
+        public IEnumerable<GetUniversityDto>? GetUniversity(string name)
         {
-            Guid = entity.Guid,
-            Name = entity.Name,
-            Code = entity.Code,
-        });
-        return Dto;
-    }
+            var universities = _universityRepository.GetByName(name);
+            if (!universities.Any())
+            {
+                return null; // No universities found
+            }
 
-    public GetUniversityDto? GetUniversity(Guid guid)
-    {
-        var entity = _servicesRepository.GetByGuid(guid);
-        if (entity is null)
-        {
-            return null;
+            var toDto = universities.Select(university =>
+                                                new GetUniversityDto
+                                                {
+                                                    Guid = university.Guid,
+                                                    Code = university.Code,
+                                                    Name = university.Name
+                                                }).ToList();
+
+            return toDto; // Universities found
         }
 
-        var toDto = new GetUniversityDto
+        public GetUniversityDto? GetUniversity(Guid guid)
         {
-            Guid = entity.Guid,
-            Name = entity.Name,
-            Code = entity.Code
-        };
+            var university = _universityRepository.GetByGuid(guid);
+            if (university is null)
+            {
+                return null; // University not found
+            }
 
-        return toDto;
-    }
+            var toDto = new GetUniversityDto
+            {
+                Guid = university.Guid,
+                Code = university.Code,
+                Name = university.Name
+            };
 
-    public GetUniversityDto? CreateUniversity(NewUniversityDto newEntity)
-    {
-        var entityUniversity = new University
-        {
-            Code = newEntity.Code,
-            Name = newEntity.Name,
-            Guid = new Guid(),
-            CreatedDate = DateTime.Now,
-            ModifiedDate = DateTime.Now
-        };
-
-        var created = _servicesRepository.Create(entityUniversity);
-        if (created is null)
-        {
-            return null;
+            return toDto; // Universities found
         }
 
-        var Dto = new GetUniversityDto
+        public GetUniversityDto? CreateUniversity(NewUniversityDto newUniversityDto)
         {
-            Guid = created.Guid,
-            Code = created.Code, 
-            Name = created.Name 
-        };
+            var university = new University
+            {
+                Code = newUniversityDto.Code,
+                Name = newUniversityDto.Name,
+                Guid = new Guid(),
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
 
-        return Dto;
-    }
+            var createdUniversity = _universityRepository.Create(university);
+            if (createdUniversity is null)
+            {
+                return null; // University not created
+            }
 
-    public int UpdateUniversity(UpdateUniversityDto entity) 
-    {
-        var isExist = _servicesRepository.IsExist(entity.Guid);
-        if (!isExist)
-        {
-            return -1;
+            var toDto = new GetUniversityDto
+            {
+                Guid = createdUniversity.Guid,
+                Code = createdUniversity.Code,
+                Name = createdUniversity.Name
+            };
+
+            return toDto; // University created
         }
 
-        var getEntity = _servicesRepository.GetByGuid(entity.Guid);
-
-        var entityUniversity = new University
+        public int UpdateUniversity(UpdateUniversityDto updateUniversityDto)
         {
-            Guid = entity.Guid,
-            Code = entity.Code,
-            Name = entity.Name,
-            CreatedDate = getEntity!.CreatedDate,
-            ModifiedDate = DateTime.Now
-        };
+            var isExist = _universityRepository.IsExist(updateUniversityDto.Guid);
+            if (!isExist)
+            {
+                return -1; // University not found
+            }
 
-        var isUpdate = _servicesRepository.Update(entityUniversity);
-        if (!isUpdate)
-        {
-            return 0;
+            var getUniversity = _universityRepository.GetByGuid(updateUniversityDto.Guid);
+
+            var university = new University
+            {
+                Guid = updateUniversityDto.Guid,
+                Code = updateUniversityDto.Code,
+                Name = updateUniversityDto.Name,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getUniversity!.CreatedDate
+            };
+
+            var isUpdate = _universityRepository.Update(university);
+            if (!isUpdate)
+            {
+                return 0; // University not updated
+            }
+
+            return 1;
         }
 
-        return 1;
-    }
-
-    public int DeleteUniversity(Guid guid)
-    {
-        var isExist = (_servicesRepository.IsExist(guid));
-        if (!isExist)
+        public int DeleteUniversity(Guid guid)
         {
-            return -1;
+            var isExist = _universityRepository.IsExist(guid);
+            if (!isExist)
+            {
+                return -1; // University not found
+            }
+
+            var university = _universityRepository.GetByGuid(guid);
+            var isDelete = _universityRepository.Delete(university!);
+            if (!isDelete)
+            {
+                return 0; // University not deleted
+            }
+
+            return 1;
         }
-
-        var entityUniversity = _servicesRepository.GetByGuid(guid);
-        var isDelete = _servicesRepository.Delete(entityUniversity!);
-
-        if (!isDelete)
-        {
-            return 0;
-        }
-
-        return 1;
     }
 }

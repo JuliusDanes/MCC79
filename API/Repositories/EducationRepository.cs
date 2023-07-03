@@ -1,10 +1,11 @@
-﻿using API.Data;
+﻿using API.Contracts;
+using API.Data;
 using API.Models;
-using API.Contracts;
 
-namespace API.Repositories;
-
-public class EducationRepository : GeneralRepository<Education>, IEducationRepository
+namespace API.Repositories
 {
-    public EducationRepository(MCC79DbContext  context) : base(context) { }
+    public class EducationRepository : GeneralRepository<Education>, IEducationRepository
+    {
+        public EducationRepository(MCC79DbContext context) : base(context) { }
+    }
 }

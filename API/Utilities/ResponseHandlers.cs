@@ -1,6 +1,6 @@
 ﻿namespace API.Utilities
 {
-    public class ResponseHandler<TEntity>
+    public class ResponseHandlers<TEntity>
     {
         public int Code { get; set; }
         public string Status { get; set; }

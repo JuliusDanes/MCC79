@@ -1,7 +1,8 @@
-﻿namespace API.DTOs.Roles;
-
-public class GetRoleDto
+﻿namespace API.DTOs.Roles
 {
-    public Guid Guid { get; set; }
-    public string Name { get; set; }
+    public class GetRoleDto
+    {
+        public Guid Guid { get; set; }
+        public string Name { get; set; }
+    }
 }

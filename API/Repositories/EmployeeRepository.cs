@@ -1,23 +1,21 @@
-﻿using API.Data;
+﻿using API.Contracts;
+using API.Data;
 using API.Models;
-using API.Contracts;
 
-namespace API.Repositories;
-
-public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
+namespace API.Repositories
 {
-    public EmployeeRepository(MCC79DbContext  dBContext) : base(dBContext) { }
-    public Employee? GetLast()
+    public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
     {
-        var entity = _context.Set<Employee>().OrderByDescending(employee => employee.Nik).FirstOrDefault();
-        _context.ChangeTracker.Clear();
-        return entity;
-    }
+        public EmployeeRepository(MCC79DbContext context) : base(context) { }
 
-    public Employee? GetByEmail(string email) 
-    {
-        var entity = _context.Set<Employee>().Where(employee => employee.Email == email).FirstOrDefault();
-        _context.ChangeTracker.Clear();
-        return entity;
+        public Employee? GetByEmailAndPhoneNumber(string data)
+        {
+            return _context.Set<Employee>().FirstOrDefault(e => e.PhoneNumber == data || e.Email == data);
+        }
+
+        public Employee? CheckEmail(string email)
+        {
+            return _context.Set<Employee>().FirstOrDefault(e => e.Email == email);
+        }
     }
 }

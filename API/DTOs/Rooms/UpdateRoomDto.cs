@@ -1,16 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.DTOs.Rooms;
-
-public class UpdateRoomDto
+namespace API.DTOs.Rooms
 {
-    [Required]
-    public Guid Guid { get; set; }
-    public string Name { get; set; }
-    [Required]
-    [Range(0, int.MaxValue)]
-    public int Floor { get; set; }
-    [Required]
-    [Range(0, int.MaxValue)]
-    public int Capacity { get; set; }
+    public class UpdateRoomDto
+    {
+        [Required]
+        public Guid Guid { get; set; }
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        [Range(0, 10)]
+        public int Floor { get; set; }
+        [Required]
+        [Range(0, 5)]
+        public int Capacity { get; set; }
+    }
 }

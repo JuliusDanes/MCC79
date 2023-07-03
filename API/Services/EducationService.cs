@@ -1,136 +1,135 @@
 ﻿using API.Contracts;
-using API.DTOs.Educations ;
-
+using API.DTOs.Educations;
 using API.Models;
-using System.Security.Principal;
 
-namespace API.Services;
-
-public class EducationService
+namespace API.Services
 {
-    private readonly IEducationRepository _servicesRepository;
-
-    public EducationService(IEducationRepository entityRepository)
+    public class EducationService
     {
-        _servicesRepository = entityRepository;
-    }
-
-    public IEnumerable<GetEducationDto>? GetEducation()
-    {
-        var entities = _servicesRepository.GetAll();
-        if(!entities.Any()) 
+        private readonly IEducationRepository _educationRepository;
+        public EducationService(IEducationRepository educationRepository)
         {
-            return null;
+            _educationRepository = educationRepository;
         }
 
-        var Dto = entities.Select(entity => new GetEducationDto
+        public IEnumerable<GetEducationDto>? GetEducation()
         {
-            Guid = entity.Guid,
-            Major = entity.Major,
-            Degree = entity.Degree,
-            Gpa = entity.Gpa,
-            UniversityGuid = entity.UniversityGuid
-        }).ToList();
-        return Dto;
-    }
+            var educations = _educationRepository.GetAll();
+            if (!educations.Any())
+            {
+                return null; // No education  found
+            }
 
-    public GetEducationDto? GetEducation(Guid guid)
-    {
-        var entity = _servicesRepository.GetByGuid(guid);
-        if (entity is null)
-        {
-            return null;
+            var toDto = educations.Select(education =>
+                                                new GetEducationDto
+                                                {
+                                                    Guid = education.Guid,
+                                                    Major = education.Major,
+                                                    Degree = education.Degree,
+                                                    Gpa = education.Gpa,
+                                                    UniversityGuid = education.UniversityGuid
+                                                }).ToList();
+
+            return toDto; // education found
         }
 
-        var toDto = new GetEducationDto
+        public GetEducationDto? GetEducation(Guid guid)
         {
-            Guid = entity.Guid,
-            Major = entity.Major,
-            Degree = entity.Degree,
-            Gpa = entity.Gpa,
-            UniversityGuid = entity.UniversityGuid
-        };
+            var education = _educationRepository.GetByGuid(guid);
+            if (education is null)
+            {
+                return null; // education not found
+            }
 
-        return toDto;
-    }
+            var toDto = new GetEducationDto
+            {
+                Guid = education.Guid,
+                Major = education.Major,
+                Degree = education.Degree,
+                Gpa = education.Gpa,
+                UniversityGuid = education.UniversityGuid
+            };
 
-    public GetEducationDto? CreateEducation(NewEducationDto newEntity)
-    {
-        var entity = new Education
-        {
-            Guid = new Guid(),
-            Major = newEntity.Major,
-            Degree = newEntity.Degree,
-            Gpa = newEntity.Gpa,
-            UniversityGuid = newEntity.UniversityGuid,
-            CreatedDate = DateTime.Now,
-            ModifiedDate = DateTime.Now
-        };
-
-        var created = _servicesRepository.Create(entity);
-        if (created is null)
-        {
-            return null;
+            return toDto; // educations found
         }
 
-        var Dto = new GetEducationDto
+        public GetEducationDto? CreateEducation(NewEducationDto newEducationDto)
         {
-            Guid = entity.Guid,
-            Major = entity.Major,
-            Degree = entity.Degree,
-            Gpa = entity.Gpa,
-            UniversityGuid = entity.UniversityGuid
-        };
+            var education = new Education
+            {
+                Guid = newEducationDto.Guid,
+                Major = newEducationDto.Major,
+                Degree = newEducationDto.Degree,
+                Gpa = newEducationDto.Gpa,
+                UniversityGuid = newEducationDto.UniversityGuid,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
 
-        return Dto;
-    }
+            var createdEducation = _educationRepository.Create(education);
+            if (createdEducation is null)
+            {
+                return null; // education not created
+            }
 
-    public int UpdateEducation(UpdateEducationDto updateEntity) 
-    {
-        var isExist = _servicesRepository.IsExist(updateEntity.Guid);
-        if (!isExist)
-        {
-            return -1;
+            var toDto = new GetEducationDto
+            {
+                Guid = education.Guid,
+                Major = education.Major,
+                Degree = education.Degree,
+                Gpa = education.Gpa,
+                UniversityGuid = education.UniversityGuid
+            };
+
+            return toDto; // education created
         }
 
-        var getEntity = _servicesRepository.GetByGuid(updateEntity.Guid);
-
-        var entity = new Education
+        public int UpdateBooking(UpdateEducationDto updateEducationDto)
         {
-            Guid = updateEntity.Guid,
-            Major = updateEntity.Major,
-            Degree = updateEntity.Degree,
-            Gpa = updateEntity.Gpa,
-            UniversityGuid = updateEntity.UniversityGuid,
-            ModifiedDate = DateTime.Now,
-            CreatedDate = getEntity!.CreatedDate
-        };
+            var isExist = _educationRepository.IsExist(updateEducationDto.Guid);
+            if (!isExist)
+            {
+                return -1; // education not found
+            }
 
-        var isUpdate = _servicesRepository.Update(entity);
-        if (!isUpdate)
-        {
-            return 0;
+            var getBooking = _educationRepository.GetByGuid(updateEducationDto.Guid);
+
+            var education = new Education
+            {
+                Guid = updateEducationDto.Guid,
+                Major = updateEducationDto.Major,
+                Degree = updateEducationDto.Degree,
+                Gpa = updateEducationDto.Gpa,
+                UniversityGuid = updateEducationDto.UniversityGuid,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getBooking!.CreatedDate
+            };
+
+            var isUpdate = _educationRepository.Update(education);
+            if (!isUpdate)
+            {
+                return 0; // education not updated
+            }
+
+            return 1;
         }
 
-        return 1;
-    }
-
-    public int DeleteEducation(Guid guid)
-    {
-        var isExist = (_servicesRepository.IsExist(guid));
-        if (!isExist)
+        public int DeleteEducation(Guid guid)
         {
-            return -1;
+            var isExist = _educationRepository.IsExist(guid);
+            if (!isExist)
+            {
+                return -1; // education not found
+            }
+
+            var education = _educationRepository.GetByGuid(guid);
+            var isDelete = _educationRepository.Delete(education!);
+            if (!isDelete)
+            {
+                return 0; // education not deleted
+            }
+
+            return 1;
         }
-
-        var account = _servicesRepository.GetByGuid(guid);
-        var isDelete = _servicesRepository.Delete(account!);
-
-        if (!isDelete)
-        {
-            return 0;
-        }
-
-        return 1;
     }
 }

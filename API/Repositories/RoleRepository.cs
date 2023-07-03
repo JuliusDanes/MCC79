@@ -1,10 +1,16 @@
-﻿using API.Data;
+﻿using API.Contracts;
+using API.Data;
 using API.Models;
-using API.Contracts;
 
-namespace API.Repositories;
-
-public class RoleRepository: GeneralRepository<Role>, IRoleRepository
+namespace API.Repositories
 {
-    public RoleRepository(MCC79DbContext  dbContext) : base(dbContext) { }
+    public class RoleRepository : GeneralRepository<Role>, IRoleRepository
+    {
+        public RoleRepository(MCC79DbContext context) : base(context) { }
+
+        public Role? GetByName(string name)
+        {
+            return _context.Set<Role>().FirstOrDefault(x => x.Name == name);
+        }
+    }
 }
